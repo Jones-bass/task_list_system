@@ -8,6 +8,7 @@ import { Button, Container, InputRow } from './styled';
 import { Input } from '../components/inputList';
 import { FiPlus } from 'react-icons/fi';
 import { Loading } from '../components/loading';
+import { api } from '../services/api';
 
 const createUserSchema = z.object({
   name: z
@@ -48,10 +49,15 @@ export function Home() {
         setLoading(true);
         console.log('Usuário', data);
 
-        if (data !== undefined) {
-          toast.success('Usuário cadastrado com sucesso!');
-          reset();
-        }
+        const taskData = {
+          nome: data.name,
+          custo: parseFloat(data.custo), 
+          dataLimite: data.date,
+          ordem: Date.now(), 
+        };
+
+        await api.post('/tarefas', taskData);
+
       } catch (error) {
         toast.error('Ocorreu um erro ao cadastrar, tente novamente!');
       } finally {
@@ -72,19 +78,22 @@ export function Home() {
           />
           <InputRow>
             <Input
+              className='custo'
               name="custo"
-              placeholder="Custo"
+              placeholder="R$ Custo"
               errorMessage={errors?.custo?.message ?? ''}
             />
             <Input
+              className='date'
               name="date"
+              type='date'
               placeholder="Data"
               errorMessage={errors?.date?.message ?? ''}
             />
+            <Button type="submit" disabled={isSubmitting || loading}>
+              {loading ? <Loading /> : <FiPlus />}
+            </Button>
           </InputRow>
-          <Button type="submit" disabled={isSubmitting || loading}>
-            {loading ? <Loading /> : <FiPlus />}
-          </Button>
         </form>
       </FormProvider>
     </Container>
