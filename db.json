@@ -1,32 +1,11 @@
 {
   "tarefas": [
     {
-      "id": "b909",
-      "nome": "Novo Test",
-      "custo": 50,
-      "dataLimite": "2025-02-25",
-      "ordem": 1730256006582
-    },
-    {
-      "id": "5e13",
-      "nome": "Novovo",
-      "custo": 55,
-      "dataLimite": "2025-11-15",
-      "ordem": 1730256251238
-    },
-    {
-      "id": "6940",
-      "nome": "jones ",
-      "custo": 50,
-      "dataLimite": "24101990",
-      "ordem": 1730310706694
-    },
-    {
-      "id": "8270",
-      "nome": "jones ",
-      "custo": 50,
-      "dataLimite": "2020-02-10",
-      "ordem": 1730310893845
+      "id": "5603",
+      "nome": "Testeando",
+      "custo": 10,
+      "dataLimite": "2024-10-24T00:00:00.000-03:00",
+      "ordem": 1730332391137
     }
   ]
 }

@@ -1,101 +1,93 @@
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, FormProvider } from 'react-hook-form'
-
-import { toast } from 'react-toastify'
-import { useCallback, useState } from 'react';
-import { Button, Container, InputRow } from './styled';
-import { Input } from '../components/inputList';
-import { FiPlus } from 'react-icons/fi';
-import { Loading } from '../components/loading';
+import { useEffect, useState } from 'react';
+import { FiArrowUp, FiArrowDown, FiTrash2 } from 'react-icons/fi';
 import { api } from '../services/api';
+import { AddList } from '../components/addList';
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-const createUserSchema = z.object({
-  name: z
-    .string()
-    .min(1, {
-      message: 'O Nome da tarefa é obrigatório',
-    }),
-  custo: z
-    .string()
-    .min(1, {
-      message: 'O Custo é obrigatório',
-    }),
-  date: z
-    .string()
-    .min(1, {
-      message: 'A Data é obrigatória',
-    }),
-});
+import { Container, TaskItem, TaskList } from './styled';
 
-type CreateUserData = z.infer<typeof createUserSchema>;
+interface Task {
+  id: number;
+  nome: string;
+  custo: number;
+  dataLimite: string;
+  ordem: number;
+}
 
 export function Home() {
-  const [loading, setLoading] = useState(false);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  const createUserForm = useForm<CreateUserData>({
-    resolver: zodResolver(createUserSchema),
-  });
+  useEffect(() => {
+    loadTasks();
+  }, []);
 
-  const {
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = createUserForm;
+  const loadTasks = () => {
+    api.get<Task[]>('/tarefas')
+      .then(response => setTasks(response.data))
+      .catch(error => console.error('Error fetching tasks', error));
+  };
 
-  const handleOnSubmit = useCallback(
-    async (data: CreateUserData) => {
-      try {
-        setLoading(true);
-        console.log('Usuário', data);
+  const handleDelete = (id: number) => {
+    if (window.confirm('Tem certeza que deseja excluir esta tarefa?')) {
+      api.delete(`/tarefas/${id}`)
+        .then(() => {
+          setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
+        })
+        .catch(error => {
+          console.error('Erro ao excluir tarefa:', error);
+          alert('Ocorreu um erro ao excluir a tarefa. Tente novamente.');
+        });
+    }
+  };
 
-        const taskData = {
-          nome: data.name,
-          custo: parseFloat(data.custo), 
-          dataLimite: data.date,
-          ordem: Date.now(), 
-        };
 
-        await api.post('/tarefas', taskData);
-
-      } catch (error) {
-        toast.error('Ocorreu um erro ao cadastrar, tente novamente!');
-      } finally {
-        setLoading(false);
-      }
-    },
-    [reset],
-  );
+  const formatDateParts = (dateStr: string) => {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) {
+      return { day: '--', month: '--', year: '--' }; 
+    }
+  
+    const day = format(date, 'd', { locale: ptBR });
+    const month = format(date, 'MMMM', { locale: ptBR });
+    const year = format(date, 'yyyy', { locale: ptBR });
+  
+    return { day, month, year };
+  };
 
   return (
     <Container>
-      <FormProvider {...createUserForm}>
-        <form onSubmit={handleSubmit(handleOnSubmit)}>
-          <Input
-            name="name"
-            placeholder="Nome da tarefa"
-            errorMessage={errors?.name?.message ?? ''}
-          />
-          <InputRow>
-            <Input
-              className='custo'
-              name="custo"
-              placeholder="R$ Custo"
-              errorMessage={errors?.custo?.message ?? ''}
-            />
-            <Input
-              className='date'
-              name="date"
-              type='date'
-              placeholder="Data"
-              errorMessage={errors?.date?.message ?? ''}
-            />
-            <Button type="submit" disabled={isSubmitting || loading}>
-              {loading ? <Loading /> : <FiPlus />}
-            </Button>
-          </InputRow>
-        </form>
-      </FormProvider>
+      <AddList onAdd={loadTasks} />
+      <TaskList>
+        {tasks.map(task => {
+          const { day, month, year } = formatDateParts(task.dataLimite);
+
+          return (
+            <TaskItem key={task.id} custo={task.custo}>
+              <div className="task-info">
+                <h1>{task.nome}</h1>
+                <p><strong>Custo:</strong> R$ {task.custo}</p>
+              </div>
+              <div className="task-date">
+                <p className="day">{day}</p>
+                <p className="month">{month}</p>
+                <p className="year">{year}</p>
+              </div>
+              <div className="actions">
+                <button>
+                  <FiArrowUp />
+                </button>
+                <button>
+                  <FiArrowDown />
+                </button>
+                <button className='trash' onClick={() => handleDelete(task.id)}>
+                  <FiTrash2 />
+                </button>
+              </div>
+            </TaskItem>
+          );
+        })}
+      </TaskList>
     </Container>
   );
 }
