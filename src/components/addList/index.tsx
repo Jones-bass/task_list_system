@@ -4,7 +4,7 @@ import { useForm, FormProvider } from 'react-hook-form'
 
 import { toast } from 'react-toastify'
 import { useCallback, useState } from 'react';
-import { Button, Container, InputRow } from './styled';
+import { Button, Container } from './styled';
 import { Input } from '../inputList';
 import { FiPlus } from 'react-icons/fi';
 import { Loading } from '../loading';
@@ -52,35 +52,35 @@ export function AddList({ onAdd }: AddTaskProps) {
     async (data: CreateUserData) => {
       try {
         setLoading(true);
-    
+
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         const parsedDate = parse(data.date, 'yyyy-MM-dd', new Date());
         const formattedDate = format(parsedDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-  
+
         const taskData = {
           nome: data.name,
-          custo: parseFloat(data.custo), 
+          custo: parseFloat(data.custo),
           dataLimite: formattedDate,
           ordem: Date.now(),
         };
-    
-        await api.post('/tarefas', taskData); 
-        
+
+        await api.post('/tarefas', taskData);
+
         toast.success('Tarefa adicionada com sucesso!');
-    
-        reset(); 
-        onAdd(); 
+
+        reset();
+        onAdd();
       } catch (error) {
         toast.error('Ocorreu um erro ao cadastrar, tente novamente!');
       } finally {
         setLoading(false);
       }
     },
-    [reset, onAdd], 
+    [reset, onAdd],
   );
-  
-  
+
+
 
   return (
     <Container>
@@ -91,26 +91,25 @@ export function AddList({ onAdd }: AddTaskProps) {
             placeholder="Nome da tarefa"
             errorMessage={errors?.name?.message ?? ''}
           />
-          <InputRow>
-            <Input
-              className='custo'
-              name="custo"
-              placeholder="R$ Custo"
-              errorMessage={errors?.custo?.message ?? ''}
-            />
-            <Input
-              className='date'
-              name="date"
-              type='date'
-              placeholder="Data"
-              errorMessage={errors?.date?.message ?? ''}
-            />
-            <Button type="submit" disabled={isSubmitting}>
-              {loading ? <Loading /> : <FiPlus />}
-            </Button>
-          </InputRow>
+          <Input
+            className='custo'
+            name="custo"
+            placeholder="R$ Custo"
+            errorMessage={errors?.custo?.message ?? ''}
+          />
+          <Input
+            className='date'
+            name="date"
+            type='date'
+            placeholder="Data"
+            errorMessage={errors?.date?.message ?? ''}
+          />
+          <Button type="submit" disabled={isSubmitting}>
+            {loading ? <Loading /> : <FiPlus />}
+          </Button>
+
         </form>
-   
+
       </FormProvider>
     </Container>
   );

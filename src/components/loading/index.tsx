@@ -5,7 +5,7 @@ import { LoadingContainer } from './styles'
 export function Loading() {
   return (
     <LoadingContainer>
-      <BeatLoader color="#dfd0a9" size={6} />
+      <BeatLoader color="#f0f0f0" size={8} />
     </LoadingContainer>
   )
 }

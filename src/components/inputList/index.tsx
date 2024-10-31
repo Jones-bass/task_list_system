@@ -1,6 +1,7 @@
 import { InputHTMLAttributes } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { InputWrapper, ErrorText } from './styles';
+import { FiAlertCircle } from 'react-icons/fi';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
@@ -15,7 +16,11 @@ export function Input({ errorMessage, name, onAdd,...rest }: InputProps) {
     <InputWrapper>
       <input {...register(name)} {...rest} />
       {onAdd && <button onClick={onAdd}>Add Task</button>}
-      {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
+      {errorMessage && (
+        <ErrorText title={errorMessage}>
+          <FiAlertCircle size={20} color="#c53030" />
+        </ErrorText>
+      )}
     </InputWrapper>
   );
 };

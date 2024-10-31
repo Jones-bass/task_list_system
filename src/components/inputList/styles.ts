@@ -1,20 +1,34 @@
-import styled from 'styled-components';
+import styled from "styled-components";
+import { Tooltip } from "../Tooltip";
 
 export const InputWrapper = styled.div`
-
+  background: #f0f0f0;
+  color: #666360;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  
+  display: flex;
+  align-items: center;
+  
   input {
-    background-color: #f0f0f0;
-    color: gray;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 14px;
+    flex: 1;
+    padding: 4%;
+    border: 0;
+    background: transparent;
+    color: #666360;
   }
 `;
 
-export const ErrorText = styled.span`
-  color: #c53030;
-  display: flex;
-  margin: 2px 0px 0px 4px;
-  font-size: 10px;
+export const ErrorText = styled(Tooltip)`
+  height: 20px;
+
+  svg {
+    margin: 0px;
+  }
+
+  span {
+    background: #E01A00;
+    color: #f0f0f0;
+  }
 `;
