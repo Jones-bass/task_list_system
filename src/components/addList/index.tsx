@@ -55,7 +55,7 @@ export function AddList({ onAdd, editingTask, onUpdate }: AddTaskProps) {
   useEffect(() => {
     if (editingTask) {
       setValue("name", editingTask.nome);
-      setValue("custo", editingTask.custo.toString());
+      setValue("custo", editingTask.custo.toFixed(2));
       setValue("date", editingTask.dataLimite.split('T')[0]);
     } else {
       reset();
@@ -76,7 +76,7 @@ export function AddList({ onAdd, editingTask, onUpdate }: AddTaskProps) {
         const taskData = {
           id: editingTask?.id,
           nome: data.name,
-          custo: parseFloat(data.custo),
+          custo: parseFloat(data.custo.replace(/[R$\s.]/g, '').replace(',', '.')),
           dataLimite: formattedDate,
           ordem: editingTask ? editingTask.ordem : Date.now(),
           

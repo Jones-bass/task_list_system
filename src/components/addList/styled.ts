@@ -7,7 +7,7 @@ export const Container = styled.div`
   align-items: center;
 
   margin-top: 2%;
-  background-color: #d9d9d9d9;  
+  background: #d9d9d9d9;  
   box-sizing: border-box;   
 
   form {

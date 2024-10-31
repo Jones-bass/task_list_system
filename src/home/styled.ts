@@ -62,12 +62,10 @@ export const TaskItem = styled.div<TaskItemProps>`
     flex-direction: column;
     color: #333;
 
-
     text-align: center;
     align-items: center;
     justify-content: center;
   
-
     .day {
       font-size: 3rem;
       font-weight: bold;
@@ -91,7 +89,7 @@ export const TaskItem = styled.div<TaskItemProps>`
     text-align: center;
     border-radius: 8px;
     width: 100%;
-    gap: 8px;
+    gap: 1px;
 
     button {
       display: flex; 

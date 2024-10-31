@@ -7,7 +7,8 @@ export const ContainerIcon = styled.main`
   p {
     color: ${(props) => props.theme.gray300};
     text-align: center;
-    line-height: 25px;
+    font-size: 100;
+
   }
 `
 
