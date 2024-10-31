@@ -17,6 +17,13 @@ export const Container = styled.div`
     margin-top: 4%;
     width: 10%;
   }
+
+  @media (max-width: 768px) {
+    img {
+      width: 40%;
+      padding: 4%;
+    }
+  }
 `;
 
 export const TaskList = styled.div`
@@ -24,6 +31,10 @@ export const TaskList = styled.div`
   width: 100%;
   max-width: 30%;
   border-radius: 8px;
+
+  @media (max-width: 768px) {
+    max-width: 60%; 
+  }
 `;
 
 export const TaskItem = styled.div<TaskItemProps>`
@@ -40,6 +51,14 @@ export const TaskItem = styled.div<TaskItemProps>`
     margin-top: 16px;
   }
 
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; 
+    text-align: center;
+    padding: 1rem;
+    margin: 0 1rem;
+  }
+
+  
   .task-info {
     display: flex;
     margin-left: 15%;
@@ -47,13 +66,17 @@ export const TaskItem = styled.div<TaskItemProps>`
 
     h1 {
       color: #333;
-      font-size: 1.5rem;
+      font-size: clamp(1.2rem, 1.2vw + 1.2rem, 1.5rem);
       margin-bottom: 5px;
     }
 
     p {
-      font-size: 1rem;
+      font-size: clamp(0.65rem, 0.65vw + 0.65rem, 1rem);
       color: #666;
+    }
+
+    @media (max-width: 768px) {
+      margin-left: 0; 
     }
   }
 
@@ -67,17 +90,17 @@ export const TaskItem = styled.div<TaskItemProps>`
     justify-content: center;
   
     .day {
-      font-size: 3rem;
+      font-size: clamp(2rem, 2vw + 2rem, 3rem);
       font-weight: bold;
     }
 
     .month {
-      font-size: 1.2rem;
+      font-size: clamp(0.6rem, 0.7vw + 0.7rem, 1.2rem);
       text-transform: capitalize; 
     }
 
     .year {
-      font-size: 1.5rem;
+      font-size: clamp(0.8rem, 1vw + 1rem, 1.5rem);
     }
   }
 
@@ -103,7 +126,7 @@ export const TaskItem = styled.div<TaskItemProps>`
 
       gap: 8px;
 
-      font-size: 14px; 
+      font-size: clamp(0.8rem, 1vw + 1rem, 1.5rem);
       
       transition: background-color 0.3s ease, color 0.3s ease;
       cursor: pointer;
@@ -124,6 +147,12 @@ export const TaskItem = styled.div<TaskItemProps>`
         background-color: red;
         color: white;
       }
+    }
+  }
+  @media (max-width: 768px) {
+    .actions {
+      flex-direction: row;
+      gap: px;
     }
   }
 `;

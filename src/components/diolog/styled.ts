@@ -97,7 +97,6 @@ export const CancelButton = styled.button`
   }
 `;
 
-// Estilização para a área dos botões no modal
 export const ModalButtons = styled.div`
   display: flex;
   justify-content: center;

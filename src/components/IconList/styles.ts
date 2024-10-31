@@ -5,10 +5,8 @@ export const ContainerIcon = styled.main`
   color: #333;  
 
   p {
-    color: ${(props) => props.theme.gray300};
     text-align: center;
-    font-size: 100;
-
+    font-size: clamp(0.65rem, 0.65vw + 0.65rem, 1rem);
   }
 `
 
@@ -17,5 +15,5 @@ export const IconImage = styled.div`
   justify-content: center;
   text-align: center;
 
-  font-size: 150px;
+  font-size: clamp(5rem, 5vw + 5rem, 18rem);
 `

@@ -126,9 +126,7 @@ export function AddList({ onAdd, editingTask, onUpdate }: AddTaskProps) {
           <Button type="submit" disabled={isSubmitting}>
           {loading ? <Loading /> : editingTask ? <CiSaveUp1 /> : <FiPlus />}
           </Button>
-
         </form>
-
       </FormProvider>
     </Container>
   );

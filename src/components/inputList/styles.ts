@@ -15,6 +15,8 @@ export const InputWrapper = styled.div`
   input {
     font-family: 'Roboto';
     flex: 1;
+    font-size: clamp(0.4rem, 0.5vw + 0.5rem, 0.9rem);
+
     padding: 4%;
     border: 0;
     background: transparent;

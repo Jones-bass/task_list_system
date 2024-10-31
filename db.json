@@ -1,25 +1,18 @@
 {
   "tarefas": [
     {
-      "id": "9d2c",
-      "nome": "Energia",
-      "custo": 100,
-      "dataLimite": "2024-11-10T00:00:00.000-03:00",
-      "ordem": 1730392414734
+      "id": "d0c1",
+      "nome": "Sulgipe",
+      "custo": 85,
+      "dataLimite": "2024-11-01T00:00:00.000-03:00",
+      "ordem": 1730396237965
     },
     {
-      "id": "5c61",
+      "id": "eed6",
       "nome": "Infotec",
       "custo": 65,
       "dataLimite": "2024-11-10T00:00:00.000-03:00",
-      "ordem": 1730392437132
-    },
-    {
-      "id": "35a6",
-      "nome": "Aluguel",
-      "custo": 1500.5,
-      "dataLimite": "2024-11-12T00:00:00.000-03:00",
-      "ordem": 1730393673018
+      "ordem": 1730405208510
     }
   ]
 }

@@ -21,6 +21,13 @@ export const Container = styled.div`
   
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+
+    @media (max-width: 768px) {
+      width: 70vw;
+      gap: 4px;
+      flex-direction: column;
+      padding: 2%;
+    }
   }
 `;
 
@@ -36,13 +43,19 @@ export const Button = styled.button`
   border: none;
   border-radius: 8px;
 
-  font-size: 26px;
-  
+  font-size: clamp(0.8rem, 1vw + 1rem, 1.8rem);
+
   cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover {
     background-color: #45a049;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%; 
+    margin: 1% 0% 10% 0%; 
+    padding: 2%;
   }
 `;
 
