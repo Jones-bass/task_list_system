@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
-import { FiArrowUp, FiArrowDown, FiTrash2 } from 'react-icons/fi';
+import { FiTrash2, FiEdit2 } from 'react-icons/fi';
 import { api } from '../services/api';
 import { AddList } from '../components/addList';
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-
+import logo from "../assets/Camada_x0020_1 (1).svg"
 import { Container, TaskItem, TaskList } from './styled';
+import { IconList } from '../components/IconList';
 
-interface Task {
+export interface Task {
   id: number;
   nome: string;
   custo: number;
@@ -17,6 +18,7 @@ interface Task {
 
 export function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   useEffect(() => {
     loadTasks();
@@ -41,6 +43,23 @@ export function Home() {
     }
   };
 
+  const handleEdit = (task: Task) => {
+    setEditingTask(task); 
+  };
+
+  const handleUpdate = (updatedTask: Task) => {
+    api.put(`/tarefas/${updatedTask.id}`, updatedTask)
+      .then(() => {
+        setTasks(prevTasks => prevTasks.map(task => 
+          task.id === updatedTask.id ? updatedTask : task
+        ));
+        setEditingTask(null); 
+      })
+      .catch(error => {
+        console.error('Erro ao atualizar tarefa:', error);
+        alert('Ocorreu um erro ao atualizar a tarefa. Tente novamente.');
+      });
+  };
 
   const formatDateParts = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -57,7 +76,8 @@ export function Home() {
 
   return (
     <Container>
-      <AddList onAdd={loadTasks} />
+      <img src={logo} alt="Logo" />
+      <AddList onAdd={loadTasks} editingTask={editingTask} onUpdate={handleUpdate}/>
       <TaskList>
         {tasks.map(task => {
           const { day, month, year } = formatDateParts(task.dataLimite);
@@ -74,11 +94,8 @@ export function Home() {
                 <p className="year">{year}</p>
               </div>
               <div className="actions">
-                <button>
-                  <FiArrowUp />
-                </button>
-                <button>
-                  <FiArrowDown />
+                <button onClick={() => handleEdit(task)}>
+                  <FiEdit2 />
                 </button>
                 <button className='trash' onClick={() => handleDelete(task.id)}>
                   <FiTrash2 />
@@ -88,6 +105,7 @@ export function Home() {
           );
         })}
       </TaskList>
+      <div>{tasks.length === 0 && <IconList />}</div>
     </Container>
   );
 }

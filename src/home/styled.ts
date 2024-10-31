@@ -11,7 +11,12 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-sizing: border-box;  
+  box-sizing: border-box; 
+  
+  img {
+    margin-top: 4%;
+    width: 10%;
+  }
 `;
 
 export const TaskList = styled.div`
@@ -37,6 +42,7 @@ export const TaskItem = styled.div<TaskItemProps>`
 
   .task-info {
     display: flex;
+    margin-left: 15%;
     flex-direction: column;
 
     h1 {
@@ -54,6 +60,8 @@ export const TaskItem = styled.div<TaskItemProps>`
   .task-date {
     display: flex;
     flex-direction: column;
+    color: #333;
+
 
     text-align: center;
     align-items: center;
@@ -67,7 +75,7 @@ export const TaskItem = styled.div<TaskItemProps>`
 
     .month {
       font-size: 1.2rem;
-      text-transform: capitalize; /* Para o mês começar com letra maiúscula */
+      text-transform: capitalize; 
     }
 
     .year {
@@ -86,9 +94,9 @@ export const TaskItem = styled.div<TaskItemProps>`
     gap: 8px;
 
     button {
-      display: flex; /* Flexbox no botão para centralizar o ícone */
-      justify-content: center; /* Centralizar horizontalmente */
-      align-items: center; /* Centralizar verticalmente */
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
       width: 30px;
       height: 30px;
       background-color: transparent;
@@ -97,14 +105,14 @@ export const TaskItem = styled.div<TaskItemProps>`
 
       gap: 8px;
 
-      font-size: 14px; /* Aumenta o tamanho do ícone */
-
+      font-size: 14px; 
+      
       transition: background-color 0.3s ease, color 0.3s ease;
       cursor: pointer;
-      border-radius: 8px; /* Bordas arredondadas para o hover */
+      border-radius: 8px; 
 
       &:hover {
-        background-color: #4CAF50;
+        background-color: #458FF5;
         color: white;
         border-radius: 8px;
       }

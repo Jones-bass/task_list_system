@@ -28,8 +28,9 @@ export const Button = styled.button`
   justify-content: center;
   align-items: center;
   text-align: center;
+  padding: 1%;
   display: flex;
-  margin-left: 4px;
+  margin-left: 2px;
   background-color: #4CAF50;
   color: white;
   border: none;

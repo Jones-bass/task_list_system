@@ -3,16 +3,20 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, FormProvider } from 'react-hook-form'
 
 import { toast } from 'react-toastify'
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, Container } from './styled';
 import { Input } from '../inputList';
 import { FiPlus } from 'react-icons/fi';
 import { Loading } from '../loading';
 import { api } from '../../services/api';
 import { format, parse } from 'date-fns';
+import { Task } from '../../home';
+import { CiSaveUp1 } from 'react-icons/ci';
 
 interface AddTaskProps {
   onAdd: () => void;
+  editingTask?: Task | null;
+  onUpdate?: (updatedTask: Task) => void;
 }
 
 const createUserSchema = z.object({
@@ -35,18 +39,29 @@ const createUserSchema = z.object({
 
 type CreateUserData = z.infer<typeof createUserSchema>;
 
-export function AddList({ onAdd }: AddTaskProps) {
+export function AddList({ onAdd, editingTask, onUpdate }: AddTaskProps) {
   const [loading, setLoading] = useState(false);
 
   const createUserForm = useForm<CreateUserData>({
     resolver: zodResolver(createUserSchema),
   });
 
-  const {
+   const {
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
+    reset, setValue
   } = createUserForm;
+
+  useEffect(() => {
+    if (editingTask) {
+      setValue("name", editingTask.nome);
+      setValue("custo", editingTask.custo.toString());
+      setValue("date", editingTask.dataLimite.split('T')[0]);
+    } else {
+      reset();
+    }
+  }, [editingTask, reset, setValue]);
+
 
   const handleOnSubmit = useCallback(
     async (data: CreateUserData) => {
@@ -59,28 +74,32 @@ export function AddList({ onAdd }: AddTaskProps) {
         const formattedDate = format(parsedDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
         const taskData = {
+          id: editingTask?.id,
           nome: data.name,
           custo: parseFloat(data.custo),
           dataLimite: formattedDate,
-          ordem: Date.now(),
+          ordem: editingTask ? editingTask.ordem : Date.now(),
+          
         };
 
-        await api.post('/tarefas', taskData);
-
-        toast.success('Tarefa adicionada com sucesso!');
+        if (editingTask && onUpdate) {
+          onUpdate(taskData as Task); 
+          toast.success('Tarefa atualizada com sucesso!');
+        } else {
+          await api.post('/tarefas', taskData); 
+          toast.success('Tarefa adicionada com sucesso!');
+          onAdd();
+        }
 
         reset();
-        onAdd();
       } catch (error) {
         toast.error('Ocorreu um erro ao cadastrar, tente novamente!');
       } finally {
         setLoading(false);
       }
     },
-    [reset, onAdd],
+    [reset, editingTask, onUpdate, onAdd],
   );
-
-
 
   return (
     <Container>
@@ -105,7 +124,7 @@ export function AddList({ onAdd }: AddTaskProps) {
             errorMessage={errors?.date?.message ?? ''}
           />
           <Button type="submit" disabled={isSubmitting}>
-            {loading ? <Loading /> : <FiPlus />}
+          {loading ? <Loading /> : editingTask ? <CiSaveUp1 /> : <FiPlus />}
           </Button>
 
         </form>

@@ -4,6 +4,7 @@ import { Tooltip } from "../Tooltip";
 export const InputWrapper = styled.div`
   background: #f0f0f0;
   color: #666360;
+  
   border: 1px solid #ccc;
   border-radius: 8px;
   width: 100%;
@@ -12,6 +13,7 @@ export const InputWrapper = styled.div`
   align-items: center;
   
   input {
+    font-family: 'Roboto';
     flex: 1;
     padding: 4%;
     border: 0;
