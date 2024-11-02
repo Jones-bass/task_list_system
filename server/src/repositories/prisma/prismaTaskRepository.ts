@@ -15,14 +15,21 @@ export class PrismaTaskRepository implements TaskRepository {
       },
     });
   }
-  
+
   async findAllTasks(): Promise<Task[]> {
     const tasks = await prisma.task.findMany({
       orderBy: {
-        order: 'asc', 
+        order: 'asc',
       },
     })
     return tasks
+  }
+
+  async deleteById(id: string): Promise<Task> {
+    const deleteTask = await prisma.task.delete({
+      where: { id },
+    })
+    return deleteTask
   }
 }
 

@@ -48,23 +48,20 @@ export function Home() {
     setDeleteModalOpen(false);
   };
 
-  const confirmDelete = () => {
-    if (taskToDelete) {
-      api.delete(`/task/${taskToDelete.id}`)
-        .then(() => {
-          setTasks(prevTasks => prevTasks.filter(task => task.id !== taskToDelete.id));
-          closeDeleteModal();
-          toast.success('Deletado com sucesso!');
-
-        })
-        .catch(error => {
-          console.error('Erro ao excluir tarefa:', error);
-          alert('Ocorreu um erro ao excluir a tarefa. Tente novamente.');
-          closeDeleteModal();
-        });
+  async function confirmDelete() {
+    if (!taskToDelete) return;
+  
+    try {
+      await api.delete(`/task/${taskToDelete.id}`);
+      setTasks(prevTasks => prevTasks.filter(task => task.id !== taskToDelete.id));
+      toast.success('Deletado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao excluir tarefa:', error);
+      toast.error('Ocorreu um erro ao excluir a tarefa. Tente novamente.');
+    } finally {
+      closeDeleteModal();
     }
-  };
-
+  }
 
   const handleEdit = (task: Task) => {
     setEditingTask(task);
