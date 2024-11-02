@@ -50,7 +50,7 @@ export function Home() {
 
   async function confirmDelete() {
     if (!taskToDelete) return;
-  
+
     try {
       await api.delete(`/task/${taskToDelete.id}`);
       setTasks(prevTasks => prevTasks.filter(task => task.id !== taskToDelete.id));
@@ -68,18 +68,12 @@ export function Home() {
   };
 
   const handleUpdate = (updatedTask: Task) => {
-    api.put(`/s/${updatedTask.id}`, updatedTask)
-      .then(() => {
-        setTasks(prevTasks => prevTasks.map(task =>
-          task.id === updatedTask.id ? updatedTask : task
-        ));
-        setEditingTask(null);
-      })
-      .catch(error => {
-        console.error('Erro ao atualizar tarefa:', error);
-        alert('Ocorreu um erro ao atualizar a tarefa. Tente novamente.');
-      });
+    setTasks(prevTasks =>
+      prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
+    );
+    setEditingTask(null);
   };
+
 
   const moveTaskUp = (id: number) => {
     const index = tasks.findIndex(t => t.id === id);
@@ -101,6 +95,8 @@ export function Home() {
 
   const formatDateParts = (dateStr: string) => {
     const date = new Date(dateStr);
+    date.setHours(date.getHours() + date.getTimezoneOffset() / 60); // Ajuste de fuso horário
+
     if (isNaN(date.getTime())) {
       return { day: '--', month: '--', year: '--' };
     }

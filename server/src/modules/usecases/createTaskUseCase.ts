@@ -20,8 +20,8 @@ export class CreateTaskUseCase {
     const scheduleDate = startOfHour(deadline);
 
     const lastTask = await this.taskRepository.findLastOrder();
-    const order = (lastTask?.order ?? 0) + 1; // Define como 1 ou incrementa o valor de `order`
-
+    const order = (lastTask?.order ?? 0) + 1; 
+    
     const createTask = await this.taskRepository.create({
       title,
       cost,

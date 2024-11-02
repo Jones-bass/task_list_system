@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, FormProvider } from 'react-hook-form'
 
 import { toast } from 'react-toastify'
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, Container } from './styled';
 import { Input } from '../inputList';
 import { FiPlus } from 'react-icons/fi';
@@ -13,7 +13,7 @@ import { Task } from '../../home';
 import { CiSaveUp1 } from 'react-icons/ci';
 
 interface AddTaskProps {
-  onAdd: () => void;
+  onAdd: (newTask: Task) => void;
   editingTask?: Task | null;
   onUpdate?: (updatedTask: Task) => void;
 }
@@ -38,7 +38,7 @@ const createUserSchema = z.object({
 
 type CreateUserData = z.infer<typeof createUserSchema>;
 
-export function AddList({ editingTask }: AddTaskProps) {
+export function AddList({ editingTask, onAdd, onUpdate }: AddTaskProps) {
   const [loading, setLoading] = useState(false);
 
   const createUserForm = useForm<CreateUserData>({
@@ -48,8 +48,18 @@ export function AddList({ editingTask }: AddTaskProps) {
   const {
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset
+    reset, setValue
   } = createUserForm;
+
+  useEffect(() => {
+    if (editingTask) {
+      setValue("title", editingTask.title);
+      setValue("cost", editingTask.cost.toFixed(2));
+      setValue("deadline", editingTask.deadline.split('T')[0]);
+    } else {
+      reset();
+    }
+  }, [editingTask, reset, setValue]);
 
   const handleOnSubmit = useCallback(
     async (data: CreateUserData) => {
@@ -62,9 +72,15 @@ export function AddList({ editingTask }: AddTaskProps) {
           deadline: new Date(data.deadline).toISOString(),
         };
 
-        await api.post('/task', requestData);
-        toast.success('Tarefa adicionada com sucesso!');
-
+        if (editingTask && onUpdate) {
+          const response = await api.put(`/task/${editingTask.id}`, requestData);
+          onAdd(response.data);
+          toast.success('Tarefa atualizada com sucesso!');
+        } else {
+          const response = await api.post('/task', requestData);
+          onAdd(response.data);
+          toast.success('Tarefa adicionada com sucesso!');
+        }
         reset();
       } catch (error) {
         toast.error('Ocorreu um erro ao cadastrar, tente novamente!');
@@ -72,7 +88,7 @@ export function AddList({ editingTask }: AddTaskProps) {
         setLoading(false);
       }
     },
-    [editingTask, reset],
+    [editingTask, reset, onAdd, onUpdate]
   );
 
   return (

@@ -5,4 +5,8 @@ export interface TaskRepository {
   findLastOrder(): Promise<Task | null>
   findAllTasks(): Promise<Task[]>
   deleteById(id: string): Promise<Task>
+
+
+  findById(id: string): Promise<Task | null>
+  update(id: string, data: Prisma.TaskUpdateInput): Promise<Task> 
 }
