@@ -3,13 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, FormProvider } from 'react-hook-form'
 
 import { toast } from 'react-toastify'
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Button, Container } from './styled';
 import { Input } from '../inputList';
 import { FiPlus } from 'react-icons/fi';
 import { Loading } from '../loading';
 import { api } from '../../services/api';
-import { format, parse } from 'date-fns';
 import { Task } from '../../home';
 import { CiSaveUp1 } from 'react-icons/ci';
 
@@ -20,17 +19,17 @@ interface AddTaskProps {
 }
 
 const createUserSchema = z.object({
-  name: z
+  title: z
     .string()
     .min(1, {
       message: 'O Nome da tarefa é obrigatório',
     }),
-  custo: z
+  cost: z
     .string()
     .min(1, {
       message: 'O Custo é obrigatório',
     }),
-  date: z
+  deadline: z
     .string()
     .min(1, {
       message: 'A Data é obrigatória',
@@ -39,57 +38,32 @@ const createUserSchema = z.object({
 
 type CreateUserData = z.infer<typeof createUserSchema>;
 
-export function AddList({ onAdd, editingTask, onUpdate }: AddTaskProps) {
+export function AddList({ editingTask }: AddTaskProps) {
   const [loading, setLoading] = useState(false);
 
   const createUserForm = useForm<CreateUserData>({
     resolver: zodResolver(createUserSchema),
   });
 
-   const {
+  const {
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset, setValue
+    reset
   } = createUserForm;
-
-  useEffect(() => {
-    if (editingTask) {
-      setValue("name", editingTask.nome);
-      setValue("custo", editingTask.custo.toFixed(2));
-      setValue("date", editingTask.dataLimite.split('T')[0]);
-    } else {
-      reset();
-    }
-  }, [editingTask, reset, setValue]);
-
 
   const handleOnSubmit = useCallback(
     async (data: CreateUserData) => {
       try {
         setLoading(true);
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        const parsedDate = parse(data.date, 'yyyy-MM-dd', new Date());
-        const formattedDate = format(parsedDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-
-        const taskData = {
-          id: editingTask?.id,
-          nome: data.name,
-          custo: parseFloat(data.custo.replace(/[R$\s.]/g, '').replace(',', '.')),
-          dataLimite: formattedDate,
-          ordem: editingTask ? editingTask.ordem : Date.now(),
-          
+        const requestData = {
+          ...data,
+          cost: Number(data.cost),
+          deadline: new Date(data.deadline).toISOString(),
         };
 
-        if (editingTask && onUpdate) {
-          onUpdate(taskData as Task); 
-          toast.success('Tarefa atualizada com sucesso!');
-        } else {
-          await api.post('/tarefas', taskData); 
-          toast.success('Tarefa adicionada com sucesso!');
-          onAdd();
-        }
+        await api.post('/task', requestData);
+        toast.success('Tarefa adicionada com sucesso!');
 
         reset();
       } catch (error) {
@@ -98,7 +72,7 @@ export function AddList({ onAdd, editingTask, onUpdate }: AddTaskProps) {
         setLoading(false);
       }
     },
-    [reset, editingTask, onUpdate, onAdd],
+    [editingTask, reset],
   );
 
   return (
@@ -106,25 +80,25 @@ export function AddList({ onAdd, editingTask, onUpdate }: AddTaskProps) {
       <FormProvider {...createUserForm}>
         <form onSubmit={handleSubmit(handleOnSubmit)}>
           <Input
-            name="name"
+            name="title"
             placeholder="Nome da tarefa"
-            errorMessage={errors?.name?.message ?? ''}
+            errorMessage={errors?.title?.message ?? ''}
           />
           <Input
             className='custo'
-            name="custo"
+            name="cost"
             placeholder="R$ Custo"
-            errorMessage={errors?.custo?.message ?? ''}
+            errorMessage={errors?.cost?.message ?? ''}
           />
           <Input
             className='date'
-            name="date"
+            name="deadline"
             type='date'
             placeholder="Data"
-            errorMessage={errors?.date?.message ?? ''}
+            errorMessage={errors?.deadline?.message ?? ''}
           />
           <Button type="submit" disabled={isSubmitting}>
-          {loading ? <Loading /> : editingTask ? <CiSaveUp1 /> : <FiPlus />}
+            {loading ? <Loading /> : editingTask ? <CiSaveUp1 /> : <FiPlus />}
           </Button>
         </form>
       </FormProvider>

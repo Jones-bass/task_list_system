@@ -2,17 +2,17 @@
   "tarefas": [
     {
       "id": "d0c1",
-      "nome": "Sulgipe",
-      "custo": 85,
-      "dataLimite": "2024-11-01T00:00:00.000-03:00",
-      "ordem": 1730396237965
+      "title": "Sulgipe",
+      "cost": 85,
+      "deadline": "2024-11-01T00:00:00.000-03:00",
+      "order": 1730396237965
     },
     {
       "id": "eed6",
-      "nome": "Infotec",
-      "custo": 65,
-      "dataLimite": "2024-11-10T00:00:00.000-03:00",
-      "ordem": 1730405208510
+      "title": "Infotec",
+      "cost": 65,
+      "deadline": "2024-11-10T00:00:00.000-03:00",
+      "order": 1730405208510
     }
   ]
 }

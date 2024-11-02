@@ -12,10 +12,10 @@ import { toast } from 'react-toastify';
 
 export interface Task {
   id: number;
-  nome: string;
-  custo: number;
-  dataLimite: string;
-  ordem: number;
+  title: string;
+  cost: number;
+  deadline: string;
+  order: number;
 }
 
 export function Home() {
@@ -24,22 +24,19 @@ export function Home() {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
 
+  async function loadTasks() {
+    try {
+      const response = await api.get<{ tasks: Task[] }>("/task");
+      setTasks(response.data.tasks);
+    } catch (error) {
+      console.error("Erro ao carregar as tarefas:", error);
+      toast.error("Erro ao carregar as tarefas. Tente novamente.");
+    }
+  }
+
   useEffect(() => {
     loadTasks();
   }, []);
-
-  const loadTasks = () => {
-    api.get<Task[]>('/tarefas')
-      .then(response => {
-        const sortedTasks = response.data.sort((a, b) => {
-          const dateA = new Date(a.dataLimite).getTime();
-          const dateB = new Date(b.dataLimite).getTime();
-          return dateA - dateB; 
-        });
-        setTasks(sortedTasks);
-      })
-      .catch(error => console.error('Error fetching tasks', error));
-  };
 
   const openDeleteModal = (task: Task) => {
     setTaskToDelete(task);
@@ -53,7 +50,7 @@ export function Home() {
 
   const confirmDelete = () => {
     if (taskToDelete) {
-      api.delete(`/tarefas/${taskToDelete.id}`)
+      api.delete(`/task/${taskToDelete.id}`)
         .then(() => {
           setTasks(prevTasks => prevTasks.filter(task => task.id !== taskToDelete.id));
           closeDeleteModal();
@@ -74,7 +71,7 @@ export function Home() {
   };
 
   const handleUpdate = (updatedTask: Task) => {
-    api.put(`/tarefas/${updatedTask.id}`, updatedTask)
+    api.put(`/s/${updatedTask.id}`, updatedTask)
       .then(() => {
         setTasks(prevTasks => prevTasks.map(task =>
           task.id === updatedTask.id ? updatedTask : task
@@ -124,13 +121,13 @@ export function Home() {
       <AddList onAdd={loadTasks} editingTask={editingTask} onUpdate={handleUpdate} />
       <TaskList>
         {tasks.map(task => {
-          const { day, month, year } = formatDateParts(task.dataLimite);
+          const { day, month, year } = formatDateParts(task.deadline);
 
           return (
-            <TaskItem key={task.id} custo={task.custo}>
+            <TaskItem key={task.id} custo={task.cost}>
               <div className="task-info">
-                <h1>{task.nome}</h1>
-                <p><strong>Custo:</strong> {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(task.custo)}</p>
+                <h1>{task.title}</h1>
+                <p><strong>Custo:</strong> {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(task.cost)}</p>
               </div>
               <div className="task-date">
                 <p className="day">{day}</p>
@@ -156,7 +153,7 @@ export function Home() {
         })}
       </TaskList>
       <div>{tasks.length === 0 && <IconList />}</div>
-      {/* Modal para confirmar exclusão */}
+
       <Diolog
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}

@@ -6,7 +6,7 @@ interface RegisterUseCaseRequest {
   title: string
   cost: number
   deadline: Date
-  order: number
+  
 }
 
 export class CreateTaskUseCase {
@@ -16,17 +16,19 @@ export class CreateTaskUseCase {
     title,
     cost,
     deadline,
-    order,
   }: RegisterUseCaseRequest): Promise<Task> {
     const scheduleDate = startOfHour(deadline);
+
+    const lastTask = await this.taskRepository.findLastOrder();
+    const order = (lastTask?.order ?? 0) + 1; // Define como 1 ou incrementa o valor de `order`
 
     const createTask = await this.taskRepository.create({
       title,
       cost,
       deadline: scheduleDate.toISOString(),
       order,
-    })
+    });
 
-    return createTask 
+    return createTask;
   }
 }

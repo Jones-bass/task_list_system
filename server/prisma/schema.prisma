@@ -18,5 +18,5 @@ model Task {
   title    String
   cost     Int
   deadline DateTime
-  order    Int
+  order    Int?     @unique
 }

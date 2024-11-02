@@ -8,11 +8,10 @@ export async function CreateTaskController(request: FastifyRequest, reply: Fasti
     title: z.string(),
     cost: z.number(),
     deadline: z.string(),
-    order: z.number(),
   });
 
-  const { title, cost, deadline, order } = registerTaskSchema.parse(request.body);
-  const parsedDate = parseISO(deadline)
+  const { title, cost, deadline } = registerTaskSchema.parse(request.body);
+  const parsedDate = parseISO(deadline);
 
   try {
     const registerTaskUseCase = makeCreateTaskUseCase();
@@ -21,7 +20,6 @@ export async function CreateTaskController(request: FastifyRequest, reply: Fasti
       title,
       cost,
       deadline: parsedDate,
-      order,
     });
 
     return reply.status(200).send({ task });
