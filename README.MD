@@ -34,29 +34,7 @@
 - **Node.js + Fastify**: Plataforma e framework rápidos para desenvolvimento de APIs RESTful.
 - **Prisma**: ORM para Node.js, facilitando a interação com o banco de dados.
 
-## Estrutura do Banco de Dados
-
-Tabela: **Tarefas**
-
-| Campo               | Tipo       | Descrição                                      |
-|---------------------|------------|------------------------------------------------|
-| `id`                | `Int`      | Identificador único da tarefa (chave primária) |
-| `nome`              | `String`   | Nome da tarefa (único)                         |
-| `custo`             | `Float`    | Custo da tarefa (em reais)                     |
-| `dataLimite`        | `DateTime` | Data limite para a conclusão da tarefa         |
-| `ordemApresentacao` | `Int`      | Campo único para ordenação das tarefas         |
-
 ### Prisma Schema
-
-```prisma
-model Tarefa {
-  id                Int      @id @default(autoincrement())
-  nome              String   @unique
-  custo             Float
-  dataLimite        DateTime
-  ordemApresentacao Int      @unique
-}
-
 
 ## Licença
 

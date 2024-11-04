@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 interface TaskItemProps {
-  custo: number;
+  $custo: number;
 }
 
 export const Container = styled.div`
@@ -42,7 +42,9 @@ export const TaskItem = styled.div<TaskItemProps>`
   grid-template-columns: 1fr 1fr auto; 
   gap: 20px;
   padding: 2%;
-  background-color: ${props => (props.custo >= 1000 ? '#FFF3B0' : '#F9F9F9')};
+
+  background-color: ${(props) => (props.$custo >= 1000 ? '#FFF3B0' : '#F9F9F9')};
+
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   align-items: center;
@@ -133,7 +135,7 @@ export const TaskItem = styled.div<TaskItemProps>`
       border-radius: 8px; 
 
       &:hover {
-        background-color: #458FF5;
+        background-color: #666;
         color: white;
         border-radius: 8px;
       }
@@ -149,6 +151,7 @@ export const TaskItem = styled.div<TaskItemProps>`
       }
     }
   }
+  
   @media (max-width: 768px) {
     .actions {
       flex-direction: row;

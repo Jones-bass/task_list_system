@@ -10,14 +10,16 @@ interface DiologProps {
   onConfirmDelete: () => void;
 }
 
-export function Diolog({ isOpen, onClose, taskToDelete, onConfirmDelete }: DiologProps) {
+export function ConfirmModalDelete({ isOpen, onClose, taskToDelete, onConfirmDelete }: DiologProps) {
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
         <Overlay />
         <Content>
           <Dialog.Title>Confirmar Exclusão</Dialog.Title>
-          <p>Tem certeza que deseja excluir a tarefa "{taskToDelete?.nome}"?</p>
+          <Dialog.Description>
+            Tem certeza que deseja excluir a tarefa "{taskToDelete?.title}"?
+          </Dialog.Description>
           <ModalButtons>
             <ConfirmButton onClick={onConfirmDelete}>Excluir</ConfirmButton>
             <CancelButton onClick={onClose}>Cancelar</CancelButton>

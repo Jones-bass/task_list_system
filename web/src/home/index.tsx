@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FiTrash2, FiEdit2, FiArrowDown, FiArrowUp } from 'react-icons/fi';
 import { api } from '../services/api';
 import { AddList } from '../components/addList';
@@ -7,7 +7,7 @@ import { ptBR } from "date-fns/locale";
 import logo from "../assets/Camada_x0020_1 (1).svg"
 import { Container, TaskItem, TaskList } from './styled';
 import { IconList } from '../components/IconList';
-import { Diolog } from '../components/diolog';
+import { ConfirmModalDelete } from '../components/diolog';
 import { toast } from 'react-toastify';
 
 export interface Task {
@@ -93,20 +93,22 @@ export function Home() {
     }
   };
 
-  const formatDateParts = (dateStr: string) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() + date.getTimezoneOffset() / 60); // Ajuste de fuso horário
+  const formatDateParts = useMemo(() => {
+    return (dateStr: string) => {
+      const date = new Date(dateStr);
+      date.setHours(date.getHours() + date.getTimezoneOffset() / 60); // Ajuste de fuso horário
 
-    if (isNaN(date.getTime())) {
-      return { day: '--', month: '--', year: '--' };
-    }
+      if (isNaN(date.getTime())) {
+        return { day: '--', month: '--', year: '--' };
+      }
 
-    const day = format(date, 'd', { locale: ptBR });
-    const month = format(date, 'MMMM', { locale: ptBR });
-    const year = format(date, 'yyyy', { locale: ptBR });
+      const day = format(date, 'd', { locale: ptBR });
+      const month = format(date, 'MMMM', { locale: ptBR });
+      const year = format(date, 'yyyy', { locale: ptBR });
 
-    return { day, month, year };
-  };
+      return { day, month, year };
+    };
+  }, []);
 
   return (
     <Container>
@@ -117,7 +119,7 @@ export function Home() {
           const { day, month, year } = formatDateParts(task.deadline);
 
           return (
-            <TaskItem key={task.id} custo={task.cost}>
+            <TaskItem key={task.id} $custo={task.cost}>
               <div className="task-info">
                 <h1>{task.title}</h1>
                 <p><strong>Custo:</strong> {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(task.cost)}</p>
@@ -147,7 +149,7 @@ export function Home() {
       </TaskList>
       <div>{tasks.length === 0 && <IconList />}</div>
 
-      <Diolog
+      <ConfirmModalDelete
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
         taskToDelete={taskToDelete}
