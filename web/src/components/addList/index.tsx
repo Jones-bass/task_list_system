@@ -9,8 +9,8 @@ import { Input } from '../inputList';
 import { FiPlus } from 'react-icons/fi';
 import { Loading } from '../loading';
 import { api } from '../../services/api';
-import { Task } from '../../home';
 import { CiSaveUp1 } from 'react-icons/ci';
+import { Task } from '../../hook/TaskContext';
 
 interface AddTaskProps {
   onAdd: (newTask: Task) => void;
@@ -74,6 +74,8 @@ export function AddList({ editingTask, onAdd, onUpdate }: AddTaskProps) {
 
         if (editingTask && onUpdate) {
           const response = await api.put(`/task/${editingTask.id}`, requestData);
+          onUpdate(response.data); // Atualiza a tarefa
+
           onAdd(response.data);
           toast.success('Tarefa atualizada com sucesso!');
         } else {

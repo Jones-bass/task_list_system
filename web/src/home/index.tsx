@@ -1,96 +1,32 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { FiTrash2, FiEdit2, FiArrowDown, FiArrowUp } from 'react-icons/fi';
-import { api } from '../services/api';
 import { AddList } from '../components/addList';
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import logo from "../assets/Camada_x0020_1 (1).svg"
 import { Container, TaskItem, TaskList } from './styled';
 import { IconList } from '../components/IconList';
 import { ConfirmModalDelete } from '../components/diolog';
-import { toast } from 'react-toastify';
-
-export interface Task {
-  id: number;
-  title: string;
-  cost: number;
-  deadline: string;
-  order: number;
-}
+import { Task, useTaskContext } from '../hook/TaskContext';
+import logo from "../assets/Camada_x0020_1 (1).svg"
 
 export function Home() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
-
-  async function loadTasks() {
-    try {
-      const response = await api.get<{ tasks: Task[] }>("/task");
-      setTasks(response.data.tasks);
-    } catch (error) {
-      console.error("Erro ao carregar as tarefas:", error);
-      toast.error("Erro ao carregar as tarefas. Tente novamente.");
-    }
-  }
-
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
-  const openDeleteModal = (task: Task) => {
-    setTaskToDelete(task);
-    setDeleteModalOpen(true);
-  };
-
-  const closeDeleteModal = () => {
-    setTaskToDelete(null);
-    setDeleteModalOpen(false);
-  };
-
-  async function confirmDelete() {
-    if (!taskToDelete) return;
-
-    try {
-      await api.delete(`/task/${taskToDelete.id}`);
-      setTasks(prevTasks => prevTasks.filter(task => task.id !== taskToDelete.id));
-      toast.success('Deletado com sucesso!');
-    } catch (error) {
-      console.error('Erro ao excluir tarefa:', error);
-      toast.error('Ocorreu um erro ao excluir a tarefa. Tente novamente.');
-    } finally {
-      closeDeleteModal();
-    }
-  }
-
+  const {
+    tasks,
+    loadTasks,
+    moveTaskUp,
+    moveTaskDown,
+    confirmDelete,
+    openDeleteModal,
+    closeDeleteModal,
+    editingTask,
+    taskToDelete,
+    isDeleteModalOpen,
+    setEditingTask,
+    handleUpdate
+  } = useTaskContext();
+  
   const handleEdit = (task: Task) => {
     setEditingTask(task);
-  };
-
-  const handleUpdate = (updatedTask: Task) => {
-    setTasks(prevTasks =>
-      prevTasks.map(task => (task.id === updatedTask.id ? updatedTask : task))
-    );
-    setEditingTask(null);
-  };
-
-
-  const moveTaskUp = (id: number) => {
-    const index = tasks.findIndex(t => t.id === id);
-    if (index > 0) {
-      const updatedTasks = [...tasks];
-      [updatedTasks[index], updatedTasks[index - 1]] = [updatedTasks[index - 1], updatedTasks[index]];
-      setTasks(updatedTasks);
-    }
-  };
-
-  const moveTaskDown = (id: number) => {
-    const index = tasks.findIndex(t => t.id === id);
-    if (index < tasks.length - 1) {
-      const updatedTasks = [...tasks];
-      [updatedTasks[index], updatedTasks[index + 1]] = [updatedTasks[index + 1], updatedTasks[index]];
-      setTasks(updatedTasks);
-    }
   };
 
   const formatDateParts = useMemo(() => {

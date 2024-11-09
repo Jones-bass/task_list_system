@@ -3,6 +3,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Home } from './home';
 import { useEffect, useState } from 'react';
 import { LogoLoading } from './components/LogoLoading';
+import { TaskProvider } from './hook/TaskContext';
 
 
 export function App() {
@@ -26,8 +27,10 @@ export function App() {
         <LogoLoading />
       ) : (
         <>
-          <ToastContainer />
-          <Home />
+          <TaskProvider>
+            <ToastContainer />
+            <Home />
+          </TaskProvider>
         </>
       )}
     </>
